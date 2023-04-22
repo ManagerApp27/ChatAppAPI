@@ -58,3 +58,45 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+
+class Channel(models.Model):
+    STATUS = (
+        ('True', 'Activo'),
+        ('False', 'Desactivar'),
+    )
+
+    user = models.ForeignKey(UserAccount, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, blank=False)
+    name = models.CharField(max_length=50, blank=False)
+    phone = models.CharField(max_length=50, blank=False, unique=True)
+    status = models.CharField(max_length=10, choices=STATUS, default=True)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Canal'
+        verbose_name_plural = 'Canales'
+
+    def __str__(self):
+        return self.name
+    
+
+# class WhatsAppTokens(models.Model):
+#     STATUS = (
+#         ('True', 'Activo'),
+#         ('False', 'Desactivar'),
+#     )
+
+#     channel = models.OneToOneField(Channel, on_delete=models.CASCADE, blank=False)
+#     name = models.CharField(max_length=50, blank=False)
+#     whatsapp_toke = models.CharField(max_length=300, blank=False)
+#     channel_toke = models.CharField(max_length=100, blank=False)
+#     status = models.CharField(max_length=10, choices=STATUS, default=True)
+#     created = models.DateField(auto_now_add=True)
+#     updated = models.DateField(auto_now=True)
+
+
+#     def __str__(self):
+#         return self.name
+    
