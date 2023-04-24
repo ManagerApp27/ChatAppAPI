@@ -111,14 +111,9 @@ class WhatsAppMessageApiViewSet(APIView):
                               )
                 msg.save()
 
-                return HttpResponse("EVENT_RECEIVED,", json.dump({"channel": channel,
-                                                                  "contact": contact,
-                                                                  "message": text,
-                                                                  "timestamp": timestamp,
-                                                                  "type": type_message,
-                                                                  "origin": "contact", }))
+                return HttpResponse("EVENT_RECEIVED sii ")
             else:
-                return HttpResponse("EVENT_RECEIVED")
+                return HttpResponse("EVENT_RECEIVED No")
 
         except Exception as e:
             print("Error recivid_message: " + str(e))
