@@ -12,17 +12,7 @@ from rest_framework.response import Response
 
 from .models import Message, Contact, Channel
 from .serializers import MessageSerializer
-from .whatsapp import get_text_user
-
-from django.utils import timezone
-import uuid
-
-
-def generate_unique_id():
-    now = timezone.now()
-    uid = str(uuid.uuid4())
-    unique_id = f"{now.strftime('%Y%m%d%H%M%S%f')}-{uid}"
-    return unique_id
+from .whatsapp import get_text_user, generate_message
 
 
 class MessageApiViewSet(ModelViewSet):
@@ -35,33 +25,43 @@ class MessageApiViewSet(ModelViewSet):
     ordering = ['-timestamp']
 
     def create(self, request, *args, **kwargs):
-        id = generate_unique_id()
-        query_dict = request.data.copy()
-        query_dict['id'] = id
+
+        channel_id = request.POST.get("channel")
+        contact_id = request.POST.get("contact")
+        message = request.POST.get("message")
+        message_type = request.POST.get("type")
+        origin = request.POST.get("origin")
+
+        contact = Contact.objects.get(id=contact_id)
+        id = generate_message(message_type, message, contact.phone)
+
+        query_dict = {
+            "id": id,
+            "channel": channel_id,
+            "contact": contact_id,
+            "message": message,
+            "type": message_type,
+            "origin": origin,
+        }
+
         serializer = self.get_serializer(data=query_dict)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         data = serializer.data
         headers = self.get_success_headers(data)
-        return Response(
-            data,
-            status=status.HTTP_201_CREATED, headers=headers
-        )
 
-        # data['campo'] = "campo"
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class WhatsAppMessageApiViewSet(APIView):
 
     def get(self, request):
-        print("get")
-        VERIFY_TOKEN = os.environ.get('WHATSAPP_SECRET_KEY')
-
+        verify_token = os.environ.get('WHATSAPP_SECRET_KEY')
         token = request.GET['hub.verify_token']
         challenge = request.GET['hub.challenge']
 
         try:
-            if token != None and challenge != None and token == VERIFY_TOKEN:
+            if token != None and challenge != None and token == verify_token:
                 return HttpResponse(challenge, status=200)
             else:
                 return HttpResponse('error', status=403)
@@ -73,7 +73,6 @@ class WhatsAppMessageApiViewSet(APIView):
 
         try:
             body = json.loads(request.body)
-            # print(body)
             entry = (body["entry"])[0]
             changes = (entry["changes"])[0]
             value = changes["value"]

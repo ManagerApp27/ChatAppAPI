@@ -1,3 +1,33 @@
+import os
+import json
+import requests
+
+
+def send_message_whatsapp(data):
+    try:
+        whatsapp_token = os.getenv('WHATSAPP_TOKEN')
+        whatsapp_url_version = os.getenv('WHATSAPP_URL_VERSION')
+        whatsapp_url_id = os.getenv('WHATSAPP_URL_ID')
+        url = f"https://graph.facebook.com/{whatsapp_url_version}/{whatsapp_url_id}/messages"
+        headers = {"Content-Type": "application/json",
+                   "Authorization": f"Bearer {whatsapp_token}"}
+
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()
+
+        result = json.loads(response.text)
+        result = (result["messages"])[0]
+        return result['id']
+
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP error: {e}")
+        return False
+
+    except Exception as e:
+        print(f"Error send_message_whatsapp: {e}")
+        return False
+
+
 def get_text_user(message):
     text = ""
     type_message = message["type"]
@@ -194,3 +224,21 @@ def list_message(list, number):
     return data
 
 
+def generate_message(type, message, number):
+    message_types = {
+        "text": text_message,
+        "image": image_message,
+        "audio": audio_message,
+        "video": video_message,
+        "document": document_message,
+        "location": location_message,
+        "button": button_message,
+        "list": list_message
+    }
+
+    if type in message_types:
+        data = message_types[type](message, number)
+        id = send_message_whatsapp(data)
+        return id
+    else:
+        pass
