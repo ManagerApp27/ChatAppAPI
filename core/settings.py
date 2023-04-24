@@ -16,14 +16,17 @@ DEBUG = 'RENDER' not in os.environ
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    'graph.facebook.com'
 ]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
+    'https://graph.facebook.com'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    'https://graph.facebook.com'
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
