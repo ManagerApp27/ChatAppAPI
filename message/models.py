@@ -1,7 +1,7 @@
 from django.db import models
 from user.models import Channel
 from contact.models import Contact
-from django.utils import timezone
+from datetime import datetime
 
 
 class Message(models.Model):
@@ -26,7 +26,7 @@ class Message(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, blank=False)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=False)
     message = models.TextField(blank=False)  
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=50, choices=TYPE, default='text')
     origin = models.CharField(max_length=50, choices=FROM)
 

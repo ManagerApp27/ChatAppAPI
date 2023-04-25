@@ -237,7 +237,7 @@ def generate_message(type, message, number):
     }
 
     if type in message_types:
-        data = message_types[type](message, number)
+        data = message_types[type](message, number)  
         id = send_message_whatsapp(data)
         return id
     else:

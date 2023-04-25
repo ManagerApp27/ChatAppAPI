@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from .models import Message, Contact, Channel
 from .serializers import MessageSerializer
 from .whatsapp import get_text_user, generate_message
+from .openai import get_response_text
 
 
 class MessageApiViewSet(ModelViewSet):
@@ -101,6 +102,16 @@ class WhatsAppMessageApiViewSet(APIView):
 
                 text = get_text_user(message)
 
+                if 'gpt:' in text:
+                    response_gpt = get_response_text(text)
+
+                    if response_gpt != "error":
+                        generate_message("text", response_gpt, contact.phone)
+                        return HttpResponse("EVENT_RECEIVED")
+                    else:
+                        generate_message("text", "No hubo connexión", contact.phone)
+                        return HttpResponse("EVENT_RECEIVED")
+
                 msg = Message(id=id,
                               channel=channel,
                               contact=contact,
@@ -111,9 +122,10 @@ class WhatsAppMessageApiViewSet(APIView):
                               )
                 msg.save()
 
-                return HttpResponse("EVENT_RECEIVED sii ")
+    
+                return HttpResponse("EVENT_RECEIVED")
             else:
-                return HttpResponse("EVENT_RECEIVED No")
+                return HttpResponse("EVENT_RECEIVED")
 
         except Exception as e:
             print("Error recivid_message: " + str(e))
