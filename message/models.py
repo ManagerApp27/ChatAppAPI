@@ -29,15 +29,19 @@ class Message(models.Model):
     timestamp = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=50, choices=TYPE, default='text')
     origin = models.CharField(max_length=50, choices=FROM)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.contact_id.name
     
 
 class Chat(models.Model):
-    isGroupChat = models.BooleanField(default=False)
+    is_group_chat = models.BooleanField(default=False)
     channel_id = models.ManyToManyField(Channel, blank=False, related_name='chat_channels')
-    contact_id = models.ManyToManyField(Channel, blank=False, related_name='chat_contacts')
-    latestMessage = models.ForeignKey(Message, on_delete=models.SET_NULL, null=True)
+    contact_id = models.ManyToManyField(Contact, blank=False, related_name='chat_contacts')
+    last_message = models.ForeignKey(Message, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(default=datetime.now)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
     

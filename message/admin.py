@@ -11,7 +11,7 @@ class MassageAdmin(admin.ModelAdmin):
 
 
 class ChatAdmin(admin.ModelAdmin):
-    list_display = ["id", "isGroupChat" ]
+    list_display = ["id", "is_group_chat" ]
     list_filter = [ 'channel_id', "contact_id",]
     search_fields = ['channel_id', 'contact_id',]
     ordering = ('-timestamp',)

@@ -3,15 +3,18 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from channel.urls import router_channel
 from contact.urls import router_contact
 from message.urls import router_message
 
 
 urlpatterns = [   
+    path('api/', include(router_channel.urls)),
     path('api/', include(router_contact.urls)),
     path('api/', include(router_message.urls)),
+    #path('api/', include('message.urls')),
+
     path('api/', include('user.urls')),
-    path('api/', include('message.urls')),
     path('admin/', admin.site.urls),
 ]
 

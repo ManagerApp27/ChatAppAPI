@@ -10,13 +10,15 @@ from datetime import datetime
 from rest_framework import status
 from rest_framework.response import Response
 
-from .models import Message, Contact, Channel
-from .serializers import MessageSerializer
+from .models import Message, Chat
+from channel.models import Channel
+from contact.models import Contact
+from .serializers import MessageSerializer, ChatSerializer
 from .whatsapp import get_text_user, generate_message
 from .openai import get_response_text
 
 
-class MessageApiViewSet(ModelViewSet):
+"""class MessageApiViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
@@ -52,9 +54,19 @@ class MessageApiViewSet(ModelViewSet):
         headers = self.get_success_headers(data)
 
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+    """
+
+class ChatApiViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChatSerializer
+    queryset = Chat.objects.all()
+    http_method_names = ['get', 'post', 'put', 'delete']
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ['channel_id']
+    ordering = ['-updated']
 
 
-class WhatsAppMessageApiViewSet(APIView):
+"""class WhatsAppMessageApiViewSet(APIView):
 
     def get(self, request):
         verify_token = os.environ.get('WHATSAPP_SECRET_KEY')
@@ -129,4 +141,4 @@ class WhatsAppMessageApiViewSet(APIView):
 
         except Exception as e:
             print("Error recivid_message: " + str(e))
-            return HttpResponse("EVENT_RECEIVED " + str(e))
+            return HttpResponse("EVENT_RECEIVED " + str(e))"""
