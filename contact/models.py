@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import UserAccount
+from channel.models import Channel
 
 
 class Contact(models.Model):
@@ -8,7 +9,8 @@ class Contact(models.Model):
         ('False', 'Desactivar'),
     )
 
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, blank=False)
+    user_id = models.ForeignKey(UserAccount, on_delete=models.CASCADE, blank=False)
+    channel_id = models.ForeignKey(Channel, on_delete=models.CASCADE, blank=False)
     name = models.CharField(max_length=50, blank=False)
     email = models.CharField(max_length=50, blank=True)
     phone = models.CharField(max_length=50, blank=False)
@@ -27,4 +29,3 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
     
-     
