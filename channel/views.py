@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,17 +18,18 @@ class ChannelApiViewSet(ModelViewSet):
     ordering = ['-created']
 
     def get_tokens(self, channel):
-        tokens_queryset = WhatsAppTokens.objects.filter(channel_id=channel.id)
+        tokens_queryset = WhatsAppTokens.objects.filter(channel_id=channel)
         tokens_serializer = WhatsAppTokensSerializer(tokens_queryset, many=True)
         return tokens_serializer.data
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        tokens = self.get_tokens(instance)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        data['tokens'] = tokens
-        return Response(data)
+        for index, instance in enumerate(queryset):
+            tokens = self.get_tokens(instance)
+            data[index]['tokens'] = tokens
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class WhatsAppTokensApiViewSet(ModelViewSet):
