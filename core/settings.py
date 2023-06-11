@@ -21,11 +21,13 @@ ALLOWED_HOSTS = [
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
+    'https://chatapp-3hv3.onrender.com',
     'https://graph.facebook.com'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    'https://chatapp-3hv3.onrender.com',
     'https://graph.facebook.com'
 ]
 
