@@ -12,5 +12,5 @@ class ContactApiViewSet(ModelViewSet):
     queryset = Contact.objects.all()
     http_method_names = ['get', 'post', 'put', 'delete']
     filter_backends = [OrderingFilter, DjangoFilterBackend]
-    filterset_fields = ['user', 'phone']
+    filterset_fields = ['user_id', 'channel_id', 'phone']
     ordering = ['-created']

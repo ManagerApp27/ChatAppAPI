@@ -39,7 +39,7 @@ class Message(models.Model):
 class Chat(models.Model):
     is_group_chat = models.BooleanField(default=False)
     channel_id = models.ManyToManyField(Channel, blank=False, related_name='chat_channels')
-    contact_id = models.ManyToManyField(Contact, blank=False, related_name='chat_contacts')
+    contact_id = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=False, related_name='chats')
     last_message = models.ForeignKey(Message, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(default=datetime.now)
     created = models.DateField(auto_now_add=True)
